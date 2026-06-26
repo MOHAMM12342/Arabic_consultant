@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  service_rag:
+    build:
+      context: ./Service_Rag
+      dockerfile: Dockerfile
+    container_name: service_rag
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./Service_Rag/Data:/app/Data
+      - ./Service_Rag/chroma_db:/app/chroma_db
+    restart: unless-stopped
+
+  service_traduction:
+    build:
+      context: ./Service_traduction
+      dockerfile: Dockerfile
+    container_name: service_traduction
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  service_modele_consultant:
+    build:
+      context: ./Service_modèle_consultant
+      dockerfile: Dockerfile
+    container_name: service_modele_consultant
+    ports:
+      - "8003:8003"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  spring_back:
+    build:
+      context: ./Spring_back
+      dockerfile: Dockerfile
+    container_name: spring_back
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVICE_RAG_URL=http://service_rag:8001
+      - SERVICE_TRANSLATION_URL=http://service_traduction:8002
+      - SERVICE_LLM_URL=http://service_modele_consultant:8003
+    depends_on:
+      - service_rag
+      - service_traduction
+      - service_modele_consultant
+    restart: unless-stopped

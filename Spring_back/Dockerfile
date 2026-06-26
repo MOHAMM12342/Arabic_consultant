@@ -1,4 +1,17 @@
-FROM ubuntu:latest
-LABEL authors="moham"
+# Stage 1: Build the application using Maven
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-ENTRYPOINT ["top", "-b"]
+# Stage 2: Run the application
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port
+EXPOSE 8081
+
+# Run the Spring Boot API
+CMD ["java", "-jar", "app.jar"]

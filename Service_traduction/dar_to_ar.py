@@ -106,10 +106,8 @@ def latin_to_arabic_darija(text):
 def affichage(text):
     if detect_script(text)=="arabic":
         translation = pipe(text)[0]['translation_text']
-        answer=translation[::-1]  
-        return answer
+        return translation
     else:
         text=latin_to_arabic_darija(text) 
         translation = pipe(text)[0]['translation_text']
-        answer=translation[::-1]  
-        return answer
+        return translation

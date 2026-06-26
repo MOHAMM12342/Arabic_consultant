@@ -1,11 +1,32 @@
-from dar_to_ar import *
-from ar_to_dar import *
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from dar_to_ar import affichage
+from ar_to_dar import fct
 
-choix=int(input("taper 1 pour traduction darija-arabe\n2 pour traduction arabe-darija"))
+app = FastAPI(title="Translation API")
 
-if choix==1:
-    prompt = input("entrer le texte en Darija à traduire : ")
-    print("traduction en arabe : ", affichage(prompt))
-else:
-    prompt = input("entrer le texte en Arabe à traduire : ")
-    print("traduction en Darija1 : ", fct(prompt))
+class TranslationRequest(BaseModel):
+    text: str
+
+class TranslationResponse(BaseModel):
+    translated_text: str
+
+@app.post("/translate/dar-to-ar", response_model=TranslationResponse)
+async def translate_darija_to_arabic(request: TranslationRequest):
+    try:
+        translated = affichage(request.text)
+        return TranslationResponse(translated_text=translated)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/translate/ar-to-dar", response_model=TranslationResponse)
+async def translate_arabic_to_darija(request: TranslationRequest):
+    try:
+        translated = fct(request.text)
+        return TranslationResponse(translated_text=translated)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8002)
