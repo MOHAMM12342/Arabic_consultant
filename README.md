@@ -78,12 +78,12 @@ If you inspect the raw string output in terminal logs or code, you will notice A
 
 ### Example Interaction:
 ```text
-User Query: ؟ﺔﻘﻔﻨﻟﺍ ﻲﻓ ﻖﺤﻟﺍ ﻭﺪﻨﻋ ﻥﻮﻜﺷ
+User Query: شكون عندو الحق في النفقة؟
 
 --- Chatbot Response ---
-.ﺔﻧﻭﺪﻤﻟﺍ ﺫﺎﻫ ﻡﺎﻜﺣﺃ ﻮﻘﺒﻄﻴﻛ ،ﺔﺑﺭﺎﻐﻤﻟﺍ ﻊﻣ ﻦﻴﻨﻛﺎﺳ ﻭﺃ ﺔﻴﺴﻨﺟ ﻝﺎﻳﺩ ﺓﺪﻋ ﻢﻫﺪﻨﻋ ﻲﺷﺎﻣ...
+كاع المغاربة، سواء كان عندهم عدة ديال جنسية أو ساكنين مع المغاربة، كيطبقو أحكام هاذ المدونة. النفقة تجب على الزوج لزوجته وأولاده...
 ```
-*(When printed inside your terminal emulator, the inverted characters align to form perfectly readable right-to-left Darija script).*
+*(While the internal string sent to stdout is reversed to accommodate Latin terminal emulators, the visual result displayed on your screen appears cleanly from right-to-left exactly as shown above).*
 
 ---
 
