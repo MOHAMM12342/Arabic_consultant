@@ -68,6 +68,14 @@ A dedicated testing client (`test_terminal.py`) is provided at the root director
 python test_terminal.py
 ```
 
+### 💡 Why is the Terminal Output Inverted?
+If you inspect the raw string output in terminal logs or code, you will notice Arabic sentences appear completely backwards (e.g. `؟ﺔﻘﻔﻨﻟﺍ ﻲﻓ ﻖﺤﻟﺍ ﻭﺪﻨﻋ ﻥﻮﻜﺷ`). This is an intentional engineering workaround designed specifically for Windows console environments:
+
+1. **The Problem:** Standard Latin-oriented terminal emulators (like `cmd.exe` or default PowerShell) render text strictly **Left-to-Right (LTR)** and lack native Arabic font ligature support. If you print a standard Arabic string `"مرحبا"` directly to stdout, Windows breaks the cursive connections and prints isolated characters backwards: `"ا ب ح ر م"`.
+2. **The Two-Step Solution in `test_terminal.py`:**
+   - **Contextual Reshaping (`arabic_reshaper`):** Analyzes each Arabic character and replaces it with its proper contextual Unicode glyph (initial, medial, or final form) so letters connect correctly.
+   - **BiDi Inversion (`python-bidi`):** Takes the reshaped string and physically reverses the character order LTR. When the Windows terminal prints this reversed string from left-to-right, your eyes naturally read the connected glyphs smoothly from **right-to-left**!
+
 ### Example Interaction:
 ```text
 User Query: ؟ﺔﻘﻔﻨﻟﺍ ﻲﻓ ﻖﺤﻟﺍ ﻭﺪﻨﻋ ﻥﻮﻜﺷ
@@ -75,7 +83,7 @@ User Query: ؟ﺔﻘﻔﻨﻟﺍ ﻲﻓ ﻖﺤﻟﺍ ﻭﺪﻨﻋ ﻥﻮﻜﺷ
 --- Chatbot Response ---
 .ﺔﻧﻭﺪﻤﻟﺍ ﺫﺎﻫ ﻡﺎﻜﺣﺃ ﻮﻘﺒﻄﻴﻛ ،ﺔﺑﺭﺎﻐﻤﻟﺍ ﻊﻣ ﻦﻴﻨﻛﺎﺳ ﻭﺃ ﺔﻴﺴﻨﺟ ﻝﺎﻳﺩ ﺓﺪﻋ ﻢﻫﺪﻨﻋ ﻲﺷﺎﻣ...
 ```
-*(When rendered in your terminal, the inverted text above will display naturally from right-to-left as fluent Arabic script).*
+*(When printed inside your terminal emulator, the inverted characters align to form perfectly readable right-to-left Darija script).*
 
 ---
 
